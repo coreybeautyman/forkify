@@ -176,6 +176,10 @@ async function controlSort() {
   }
 }
 
+function newFeature(){
+  console.log('welcome to the app');
+}
+
 function init() {
   bookmarksView.addHandlerRender(controlBookmarks);
   searchView.addHandlerSearch(controlSearchResults);
@@ -185,7 +189,7 @@ function init() {
   paginationView.addHandlerClick(controlPagination);
   sortView.addHandlerClick(controlSort);
   addRecipeView.addHandlerUpload(controlAddRecipe);
-  console.log('welcome');
+  newFeature()
 }
 init();
 
