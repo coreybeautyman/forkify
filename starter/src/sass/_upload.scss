@@ -25,6 +25,17 @@
   }
 }
 
+.ingredient-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  gap: 0.5rem;
+  padding: 0rem 2rem;
+}
+
+.ingredient-inputs input {
+  margin-bottom: 0.5rem;
+}
+
 .overlay {
   position: fixed;
   top: 0;
@@ -44,7 +55,7 @@
 
 .upload {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.5fr;
   gap: 4rem 6rem;
 
   &__column {
@@ -61,8 +72,10 @@
 
     & input {
       font-size: 1.5rem;
-      padding: 0.8rem 1rem;
+      padding: 0.8rem;
       border: 1px solid #ddd;
+      width: 100%;
+
       border-radius: 0.5rem;
       transition: all 0.2s;
 

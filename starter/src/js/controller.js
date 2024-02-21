@@ -144,16 +144,12 @@ async function controlSort() {
   try {
     // 0) render spinner
     resultsView.renderSpinner();
-    console.log(model.state.search.results.sorted);
-
     if (
       !model.state.search.sorted &&
-      !model.state.search.sortedResults?.length
+      model.state.search.sortedResults === undefined
     ) {
       await model.getRecipeDuration();
     }
-
-    debugger;
 
     if (!model.state.sorted) {
       // 4) render results
@@ -176,7 +172,7 @@ async function controlSort() {
   }
 }
 
-function newFeature(){
+function newFeature() {
   console.log('welcome to the app');
 }
 
@@ -189,7 +185,7 @@ function init() {
   paginationView.addHandlerClick(controlPagination);
   sortView.addHandlerClick(controlSort);
   addRecipeView.addHandlerUpload(controlAddRecipe);
-  newFeature()
+  newFeature();
 }
 init();
 

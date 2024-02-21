@@ -18,7 +18,7 @@ export default class View {
 
   update(data) {
     if (!data || data.length === 0) return;
- 
+
     const newMarkup = this._generateMarkup();
     const newDOM = document.createRange().createContextualFragment(newMarkup);
 
@@ -82,5 +82,5 @@ export default class View {
   </div>`;
     this._clear();
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
-  }
+  } 
 }
