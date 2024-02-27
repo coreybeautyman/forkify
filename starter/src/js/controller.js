@@ -75,7 +75,7 @@ async function controlSearchResults() {
     paginationView.render(model.state.search);
 
     // 6) render sort button
-    sortView.renderSortButton();
+    sortView.toggleSortBtn()
 
     // console.log(model.state);
   } catch (err) {

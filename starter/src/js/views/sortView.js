@@ -4,7 +4,7 @@ import icons from 'url:../../img/icons.svg';
 class SortView extends View {
   _parentElement = document.querySelector('.sort');
 
-  renderSortButton() {
+  toggleSortBtn() {
     this._parentElement.classList.toggle('hidden');
   }
 
@@ -13,7 +13,6 @@ class SortView extends View {
       const btn = e.target.closest('.btn--inline');
       if (!btn) return;
 
-      const goToPage = +btn.dataset.goto;
       handler();
     });
   }
