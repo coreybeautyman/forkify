@@ -66,7 +66,6 @@ export function getSearchResultsPage(results, page = state.search.page) {
   state.search.page = page;
   const start = (page - 1) * state.search.resultsPerPage;
   const end = page * state.search.resultsPerPage;
-
   return results.slice(start, end);
 }
 
@@ -113,15 +112,29 @@ function clearBookmarks() {
 export async function uploadRecipe(newRecipe) {
   try {
     const ingredients = Object.entries(newRecipe)
-      .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
-      .map(ing => {
-        const ingArr = ing[1].split(',').map(el => el.trim());
+      .filter(([key, value]) => key.startsWith('ingredient') && value !== '')
+      .reduce((results, [key, value]) => {
+        const [, index, property] = key.split('-');
+        const ingNum = index.padStart(2, '0');
 
-        if (ingArr.length !== 3) throw new Error('Wrong ingredient format');
+        if (!results[ingNum])
+          results[ingNum] = { quantity: '', unit: '', description: '' };
 
-        const [quantity, unit, description] = ingArr;
-        return { quantity: quantity ? +quantity : null, unit, description };
-      });
+        switch (property) {
+          case 'quantity':
+          case 'unit':
+          case 'description':
+            results[ingNum][property] =
+              value !== '' ? (isNaN(value) ? value : +value) : '';
+            break;
+          default:
+            break;
+        }
+
+        return results;
+      }, []);
+
+    const ingredientsArr = Object.values(ingredients);
 
     const recipe = {
       title: newRecipe.title,
@@ -130,9 +143,8 @@ export async function uploadRecipe(newRecipe) {
       publisher: newRecipe.publisher,
       cooking_time: +newRecipe.cookingTime,
       servings: +newRecipe.servings,
-      ingredients,
+      ingredients: ingredientsArr,
     };
-
     const data = await AJAX(`${API_URL}?key=${API_KEY}`, recipe);
     state.recipe = createRecipeObject(data);
     addBookmark(state.recipe);
@@ -167,11 +179,15 @@ function sortRecipes() {
   state.search.sortedResults = sortedResults;
 }
 
+export function resetPage() {
+  state.search.page = 1;
+}
+
 export function setSorted() {
   state.search.sorted = !state.search.sorted;
 }
 
-// clearBookmarks()
+// clearBookmarks();
 
 // loadSearchResults('pasta');
 

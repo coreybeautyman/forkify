@@ -42,6 +42,10 @@ async function controlRecipes() {
 
     // 2) rendering recipe
     recipeView.render(model.state.recipe);
+
+    // console.log(model.state.recipe);
+
+    // console.log(model.state.recipe);
   } catch (err) {
     recipeView.renderError();
     // console.error(err);
@@ -81,7 +85,14 @@ async function controlSearchResults() {
 }
 
 function controlPagination(goToPage) {
-  resultsView.render(model.getSearchResultsPage(goToPage));
+  if (model.state.search.sorted)
+    resultsView.render(
+      model.getSearchResultsPage(model.state.search.sortedResults, goToPage)
+    );
+  if (!model.state.search.sorted)
+    resultsView.render(
+      model.getSearchResultsPage(model.state.search.results, goToPage)
+    );
   paginationView.render(model.state.search);
 }
 
@@ -116,8 +127,6 @@ async function controlAddRecipe(newRecipe) {
     // upload new recipe to the api
     await model.uploadRecipe(newRecipe);
 
-    console.log(model.state.recipe);
-
     // render recipe
     recipeView.render(model.state.recipe);
 
@@ -132,10 +141,13 @@ async function controlAddRecipe(newRecipe) {
 
     // close form window
     setTimeout(function () {
-      addRecipeView.toggleWindow();
+      addRecipeView.hideWindow();
+      setTimeout(function () {
+        addRecipeView.resetMessage();
+      }, 400);
     }, MODEL_CLOSE_SEC * 1000);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     addRecipeView.renderError(err);
   }
 }
@@ -144,6 +156,10 @@ async function controlSort() {
   try {
     // 0) render spinner
     resultsView.renderSpinner();
+
+    // reset page
+    model.resetPage();
+
     if (
       !model.state.search.sorted &&
       model.state.search.sortedResults === undefined
@@ -151,12 +167,13 @@ async function controlSort() {
       await model.getRecipeDuration();
     }
 
-    if (!model.state.sorted) {
+    if (!model.state.search.sorted) {
       // 4) render results
       resultsView.render(
         model.getSearchResultsPage(model.state.search.sortedResults)
       );
     } else {
+      console.log('sorted - unsorted');
       resultsView.render(
         model.getSearchResultsPage(model.state.search.results)
       );
@@ -165,15 +182,9 @@ async function controlSort() {
 
     // 5) Render initial pagination buttons
     paginationView.render(model.state.search);
-
-    // console.log(model.state.search.results);
   } catch (err) {
     console.error(err);
   }
-}
-
-function newFeature() {
-  console.log('welcome to the app');
 }
 
 function init() {
@@ -185,7 +196,6 @@ function init() {
   paginationView.addHandlerClick(controlPagination);
   sortView.addHandlerClick(controlSort);
   addRecipeView.addHandlerUpload(controlAddRecipe);
-  newFeature();
 }
 init();
 
